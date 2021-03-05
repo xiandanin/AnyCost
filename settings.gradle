@@ -1,0 +1,4 @@
+include ':debugtimer-compiler'
+include ':debugtimer'
+include ':app'
+rootProject.name = "DebugTimer"
