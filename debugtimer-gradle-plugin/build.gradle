@@ -1,0 +1,27 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'maven'
+}
+
+dependencies {
+
+    implementation gradleApi()
+    implementation "com.android.tools.build:gradle:4.1.1"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+
+def group = 'in.xiandan'
+def version = '1.0.1'
+def artifactId = 'debugtimer-gradle-plugin'
+
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.groupId = group
+            pom.artifactId = artifactId
+            pom.version = version
+            repository(url: uri(rootProject.buildDir))
+        }
+    }
+}

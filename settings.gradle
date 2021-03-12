@@ -1,3 +1,4 @@
+include ':debugtimer-gradle-plugin'
 include ':debugtimer-compiler'
 include ':debugtimer'
 include ':app'
