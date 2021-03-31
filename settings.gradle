@@ -1,5 +1,4 @@
-include ':debugtimer-gradle-plugin'
-include ':debugtimer-compiler'
-include ':debugtimer'
+include ':anycost-gradle-plugin'
+include ':anycost'
 include ':app'
-rootProject.name = "DebugTimer"
+rootProject.name = "AnyCost"

@@ -10,16 +10,17 @@
         android:id="@+id/btn_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="异步测试（调用）"
+        android:text="计时测试（手动）"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toEndOf="@id/btn_test"
         android:id="@+id/btn_test_annotation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="异步测试（注解）"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="计时测试（自动）"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
