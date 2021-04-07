@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-            override fun onTimingEnd(key: String?, threadName: String?, time: Long) {
+            override fun onTimingEnd(key: String?, threadName: String?, time: Long, extras: Any?) {
                 log.append("key: ${key}, Thread: ${threadName}, cost：${time}ms\n")
                 tv_log.text = log.toString()
             }

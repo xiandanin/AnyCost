@@ -47,7 +47,11 @@ public class AnyCost {
     }
 
     public static long end(String key) {
-        return getInstance().internalEnd(key);
+        return end(key, null);
+    }
+
+    public static long end(String key, Object extras) {
+        return getInstance().internalEnd(key, extras);
     }
 
     public static long get(String key) {
@@ -78,14 +82,14 @@ public class AnyCost {
      *
      * @param key 唯一标识符
      */
-    private long internalEnd(String key) {
+    private long internalEnd(String key, Object extras) {
         if (mEnabled) {
             long endTime = internalGet(key);
             mTimingCache.remove(key);
             String threadName = Thread.currentThread().getName();
             mMainHandler.post(() -> {
                 if (mOnTimingListener != null) {
-                    mOnTimingListener.onTimingEnd(key, threadName, endTime);
+                    mOnTimingListener.onTimingEnd(key, threadName, endTime, extras);
                 }
             });
             return endTime;
@@ -111,7 +115,7 @@ public class AnyCost {
 
         }
 
-        public abstract void onTimingEnd(String key, String threadName, long time);
+        public abstract void onTimingEnd(String key, String threadName, long time, Object extras);
     }
 
 
