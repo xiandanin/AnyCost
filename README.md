@@ -1,6 +1,6 @@
 ## 安装
 ```
-implementation 'in.xiandan:anycost:1.0.1'
+implementation 'in.xiandan:anycost:1.0.2'
 ```
 
 ## 使用
@@ -21,7 +21,8 @@ AnyCost.getInstance().enable(true)
 
 ### 计时监听
 ```
-AnyCost.getInstance().setOnTimingEndListener(object : AnyCost.OnTimingListener() {
+// 添加监听
+AnyCost.getInstance().addOnTimingEndListener(object : AnyCost.OnTimingListener() {
     override fun onTimingBegin(key: String?, threadName: String?) {
 
     }
@@ -30,4 +31,6 @@ AnyCost.getInstance().setOnTimingEndListener(object : AnyCost.OnTimingListener()
         
     }
 })
+//移除监听
+AnyCost.getInstance().removeOnTimingEndListener(listener)
 ```

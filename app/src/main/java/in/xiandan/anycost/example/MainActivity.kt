@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val log = StringBuffer()
-        AnyCost.getInstance().enable(true).setOnTimingEndListener(object : AnyCost.OnTimingListener() {
+        AnyCost.getInstance().enable(true).addOnTimingEndListener(object : AnyCost.OnTimingListener() {
             override fun onTimingBegin(key: String?, threadName: String?) {
 
             }

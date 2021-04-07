@@ -4,7 +4,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by dengyuhan on 2021/3/29 17:40
@@ -26,14 +28,24 @@ public class AnyCost {
 
     private boolean mEnabled = true;
 
-    private OnTimingListener mOnTimingListener;
+    private List<OnTimingListener> mListeners = new ArrayList<>();
 
     private final HashMap<String, Long> mTimingCache = new HashMap<>();
     private final Handler mMainHandler = new Handler(Looper.getMainLooper());
 
 
-    public AnyCost setOnTimingEndListener(OnTimingListener listener) {
-        this.mOnTimingListener = listener;
+    public AnyCost addOnTimingEndListener(OnTimingListener listener) {
+        this.mListeners.add(listener);
+        return this;
+    }
+
+    public AnyCost removeOnTimingEndListener(OnTimingListener listener) {
+        this.mListeners.remove(listener);
+        return this;
+    }
+
+    public AnyCost removeOnTimingEndListener() {
+        this.mListeners.clear();
         return this;
     }
 
@@ -70,8 +82,8 @@ public class AnyCost {
             mTimingCache.put(key, start);
             String threadName = Thread.currentThread().getName();
             mMainHandler.post(() -> {
-                if (mOnTimingListener != null) {
-                    mOnTimingListener.onTimingBegin(key, threadName);
+                for (OnTimingListener l : mListeners) {
+                    l.onTimingBegin(key, threadName);
                 }
             });
         }
@@ -88,8 +100,8 @@ public class AnyCost {
             mTimingCache.remove(key);
             String threadName = Thread.currentThread().getName();
             mMainHandler.post(() -> {
-                if (mOnTimingListener != null) {
-                    mOnTimingListener.onTimingEnd(key, threadName, endTime, extras);
+                for (OnTimingListener l : mListeners) {
+                    l.onTimingEnd(key, threadName, endTime, extras);
                 }
             });
             return endTime;
