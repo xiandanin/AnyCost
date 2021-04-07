@@ -1,12 +1,5 @@
 ## 安装
 ```
-buildscript {
-    dependencies {
-        classpath "in.xiandan:anycost-gradle-plugin:1.0.0"
-    }
-}
-
-
 implementation 'in.xiandan:anycost:1.0.0'
 ```
 
@@ -18,7 +11,7 @@ AnyCost.begin(key)
 
 ### 结束计时
 ```
-AnyCost.begin(key)
+AnyCost.end(key)
 ```
 
 ### 启用或禁用
@@ -28,7 +21,7 @@ AnyCost.getInstance().enable(true)
 
 ### 计时监听
 ```
-AnyCost.getInstance().enable(true).setOnTimingEndListener(object : AnyCost.OnTimingListener() {
+AnyCost.getInstance().setOnTimingEndListener(object : AnyCost.OnTimingListener() {
     override fun onTimingBegin(key: String?, threadName: String?) {
 
     }
