@@ -3,31 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:padding="16dp"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <Button
         android:id="@+id/btn_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="计时测试（手动）"
+        android:text="手动计时"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:layout_marginStart="10dp"
-        app:layout_constraintStart_toEndOf="@id/btn_test"
         android:id="@+id/btn_test_annotation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="计时测试（自动）"
+        android:layout_marginStart="10dp"
+        android:text="注解计时"
+        app:layout_constraintStart_toEndOf="@id/btn_test"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_test_kotlin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="闭包计时"
+        app:layout_constraintStart_toEndOf="@id/btn_test_annotation"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_log"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_test"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_test" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

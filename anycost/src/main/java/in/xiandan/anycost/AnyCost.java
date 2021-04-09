@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by dengyuhan on 2021/3/29 17:40
+ * Created by xiandanin on 2021/3/29 17:40
  */
 public class AnyCost {
 
@@ -34,7 +34,7 @@ public class AnyCost {
     private final Handler mMainHandler = new Handler(Looper.getMainLooper());
 
 
-    public AnyCost addOnTimingEndListener(OnTimingListener listener) {
+    public AnyCost addOnTimingListener(OnTimingListener listener) {
         this.mListeners.add(listener);
         return this;
     }
@@ -55,7 +55,7 @@ public class AnyCost {
     }
 
     public static void begin(String key) {
-        getInstance().internalMark(key);
+        getInstance().internalBegin(key);
     }
 
     public static long end(String key) {
@@ -64,6 +64,10 @@ public class AnyCost {
 
     public static long end(String key, Object extras) {
         return getInstance().internalEnd(key, extras);
+    }
+
+    public static void end(String key, long endTime, Object extras) {
+        getInstance().internalDirectEnd(key, endTime, extras);
     }
 
     public static long get(String key) {
@@ -76,7 +80,7 @@ public class AnyCost {
      *
      * @param key 唯一标识符
      */
-    private void internalMark(String key) {
+    private void internalBegin(String key) {
         if (mEnabled) {
             long start = SystemClock.uptimeMillis();
             mTimingCache.put(key, start);
@@ -98,15 +102,21 @@ public class AnyCost {
         if (mEnabled) {
             long endTime = internalGet(key);
             mTimingCache.remove(key);
+            internalDirectEnd(key, endTime, extras);
+            return endTime;
+        }
+        return 0;
+    }
+
+    private void internalDirectEnd(String key, long endTime, Object extras) {
+        if (mEnabled) {
             String threadName = Thread.currentThread().getName();
             mMainHandler.post(() -> {
                 for (OnTimingListener l : mListeners) {
                     l.onTimingEnd(key, threadName, endTime, extras);
                 }
             });
-            return endTime;
         }
-        return 0;
     }
 
     /**

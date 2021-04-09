@@ -1,15 +1,13 @@
 package `in`.xiandan.anycost.example
 
 import `in`.xiandan.anycost.AnyCost
+import `in`.xiandan.anycost.addOnTimingListener
 import `in`.xiandan.anycost.annotation.AnyCostMark
-import `in`.xiandan.anycost.example.R
+import `in`.xiandan.anycost.cost
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -19,47 +17,53 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val log = StringBuffer()
-        AnyCost.getInstance().enable(true).addOnTimingEndListener(object : AnyCost.OnTimingListener() {
-            override fun onTimingBegin(key: String?, threadName: String?) {
 
-            }
-
-            override fun onTimingEnd(key: String?, threadName: String?, time: Long, extras: Any?) {
-                log.append("key: ${key}, Thread: ${threadName}, cost：${time}ms\n")
-                tv_log.text = log.toString()
-            }
-        })
+        AnyCost.getInstance().addOnTimingListener { key, threadName, time, extras ->
+            log.append("key: ${key}, Thread: ${threadName}, cost：${time}ms\n")
+            tv_log.text = log.toString()
+        }
 
         btn_test.setOnClickListener {
             val text = btn_test.text
             btn_test.isEnabled = false
-            btn_test.text = "正在执行异步任务"
-            Observable.just(Unit)
-                    .map {
-                        AnyCost.begin("manual_test")
-                        Thread.sleep(Random().nextInt(5000).toLong())
-                        AnyCost.end("manual_test")
-                    }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        btn_test.isEnabled = true
-                        btn_test.text = text
-                    }
+            btn_test.text = "正在执行"
+            GlobalScope.launch {
+                AnyCost.begin("manual_test")
+                delay(Random().nextInt(5000).toLong())
+                AnyCost.end("manual_test")
+                withContext(Dispatchers.Main){
+                    btn_test.isEnabled = true
+                    btn_test.text = text
+                }
+            }
         }
 
         btn_test_annotation.setOnClickListener {
             val text = btn_test_annotation.text
             btn_test_annotation.isEnabled = false
-            btn_test_annotation.text = "正在执行异步任务"
-            Observable.just(Unit)
-                    .map { testDelay() }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        btn_test_annotation.isEnabled = true
-                        btn_test_annotation.text = text
-                    }
+            btn_test_annotation.text = "正在执行"
+            GlobalScope.launch {
+                testDelay()
+                withContext(Dispatchers.Main){
+                    btn_test_annotation.isEnabled = true
+                    btn_test_annotation.text = text
+                }
+            }
+        }
+
+        btn_test_kotlin.setOnClickListener {
+            val text = btn_test_kotlin.text
+            btn_test_kotlin.isEnabled = false
+            btn_test_kotlin.text = "正在执行"
+            GlobalScope.launch {
+                cost("kotlin"){
+                    delay(Random().nextInt(5000).toLong())
+                }
+                withContext(Dispatchers.Main){
+                    btn_test_kotlin.isEnabled = true
+                    btn_test_kotlin.text = text
+                }
+            }
         }
     }
 
@@ -67,4 +71,5 @@ class MainActivity : AppCompatActivity() {
     private fun testDelay() {
         Thread.sleep(Random().nextInt(5000).toLong())
     }
+
 }
