@@ -1,7 +1,5 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
-    id 'maven-publish'
-    id 'signing'
 }
 
 dependencies {
@@ -12,38 +10,10 @@ dependencies {
 }
 ext {
     groupId = 'in.xiandan'
-    version ='1.0.0'
+    version ='1.0.1'
     description = '全局耗时计算器，可以在任何地方计算耗时'
     gitUrl = 'https://github.com/xiandanin/AnyCost'
     authorEmail = 'denghahae@gmail.com'
     license = 'MIT'
 }
-apply from: 'maven.gradle'
-/*
-
-Properties localProperties = new Properties()
-localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
-def mavenUsername = localProperties.getProperty("sonatype.username")
-def mavenPassword = localProperties.getProperty("sonatype.password")
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            pom.groupId = 'in.xiandan'
-            pom.artifactId = 'anycost-gradle-plugin'
-            pom.version = '1.0.0'
-
-            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-            // You only need this if you want to publish snapshots, otherwise just set the URL
-            // to the release repo directly
-            def url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-
-            // The username and password we've fetched earlier
-            //repository(url: uri(rootProject.buildDir))
-            repository(url: url) {
-                authentication(userName: mavenUsername, password: mavenPassword)
-            }
-
-        }
-    }
-}*/
+apply from: 'publish.gradle'

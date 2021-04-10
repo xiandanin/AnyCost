@@ -1,3 +1,6 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
 Properties localProperties = new Properties()
 localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
 localProperties.each { name, value ->
@@ -29,15 +32,33 @@ if (!projectDescription || !projectGitUrl || !projectLicense || !projectLicenseU
     println('警告：缺少可选信息')
 }
 
-
-task javadocsJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier.set("javadoc")
-    from javadoc.destinationDir
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    archiveClassifier.set("sources")
+def isAndroidProject = project.hasProperty('android')
+if (isAndroidProject) {
+    println("使用Android工程方式发布")
+    // Android 工程
+    task androidJavadocs(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    }
+    task javadocsJar(type: Jar, dependsOn: androidJavadocs) {
+        archiveClassifier.set("javadoc")
+        from androidJavadocs.destinationDir
+    }
+    task sourcesJar(type: Jar) {
+        archiveClassifier.set("sources")
+        from android.sourceSets.main.java.srcDirs
+    }
+} else {
+    println("使用Java工程方式发布")
+    // Java 工程
+    task javadocsJar(type: Jar, dependsOn: javadoc) {
+        archiveClassifier.set("javadoc")
+        from javadoc.destinationDir
+    }
+    task sourcesJar(type: Jar) {
+        archiveClassifier.set("sources")
+        from sourceSets.main.allJava
+    }
 }
 
 tasks.withType(Javadoc).all {
@@ -47,6 +68,9 @@ tasks.withType(Javadoc).all {
         author true
         version true
         links "http://docs.oracle.com/javase/8/docs/api"
+        if (isAndroidProject) {
+            linksOffline "http://d.android.com/reference", "${android.sdkDirectory}/docs/reference"
+        }
         failOnError = false
     }
     enabled = false
@@ -58,11 +82,16 @@ artifacts {
 
 publishing {
     publications {
-        jar(MavenPublication) {
+        aar(MavenPublication) {
             groupId = projectGroupId
             artifactId = projectArtifactId
             version = projectVersionName
-            artifact("$buildDir/libs/${project.getName()}.jar")
+            // Tell maven to prepare the generated "*.aar" file for publishing
+            if (isAndroidProject){
+                artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
+            }else{
+                artifact("$buildDir/libs/${project.getName()}.jar")
+            }
             artifact javadocsJar
             artifact sourcesJar
 
@@ -71,10 +100,12 @@ publishing {
                 description = projectDescription
                 // If your project has a dedicated site, use its URL here
                 url = projectGitUrl
-                licenses {
-                    license {
-                        name = projectLicense
-                        url = projectLicenseUrl
+                if (projectLicense){
+                    licenses {
+                        license {
+                            name = projectLicense
+                            url = projectLicenseUrl
+                        }
                     }
                 }
                 developers {

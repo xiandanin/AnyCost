@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         val log = StringBuffer()
 
         AnyCost.getInstance().addOnTimingListener { key, threadName, time, extras ->
-            log.append("key: ${key}, Thread: ${threadName}, cost：${time}ms\n")
+            log.append("key: ${key}, cost：${time}ms\n")
             tv_log.text = log.toString()
         }
 
@@ -28,9 +28,9 @@ class MainActivity : AppCompatActivity() {
             btn_test.isEnabled = false
             btn_test.text = "正在执行"
             GlobalScope.launch {
-                AnyCost.begin("manual_test")
-                delay(Random().nextInt(5000).toLong())
-                AnyCost.end("manual_test")
+                AnyCost.begin("manual")
+                delay(Random().nextInt(3000).toLong())
+                AnyCost.end("manual")
                 withContext(Dispatchers.Main){
                     btn_test.isEnabled = true
                     btn_test.text = text
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
             btn_test_annotation.isEnabled = false
             btn_test_annotation.text = "正在执行"
             GlobalScope.launch {
-                testDelay()
+                annotationDelay()
                 withContext(Dispatchers.Main){
                     btn_test_annotation.isEnabled = true
                     btn_test_annotation.text = text
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
             btn_test_kotlin.text = "正在执行"
             GlobalScope.launch {
                 cost("kotlin"){
-                    delay(Random().nextInt(5000).toLong())
+                    delay(Random().nextInt(3000).toLong())
                 }
                 withContext(Dispatchers.Main){
                     btn_test_kotlin.isEnabled = true
@@ -67,9 +67,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @AnyCostMark("auto_test")
-    private fun testDelay() {
-        Thread.sleep(Random().nextInt(5000).toLong())
+    @AnyCostMark("annotation")
+    private fun annotationDelay() {
+        Thread.sleep(Random().nextInt(3000).toLong())
     }
 
 }

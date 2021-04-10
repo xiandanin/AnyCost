@@ -11,7 +11,7 @@ AnyCost.begin(key)
 
 ### 结束计时
 ```
-AnyCost.end(key)
+long end = AnyCost.end(key)
 ```
 
 ### 启用或禁用
@@ -41,9 +41,24 @@ AnyCost.getInstance().removeOnTimingEndListener(listener)
 AnyCost.getInstance().removeOnTimingEndListener()
 ```
 
-### Kotlin扩展
-使用kotlin，可以更简单
+### 注解计时
+如果需要通过注解自动计时，还需要启用插件
+```
+buildscript {
+    dependencies {
+        classpath 'in.xiandan:anycost-gradle-plugin:1.0.1'
+    }
+}
+```
 
+`app`-`build.gradle`
+```
+plugins {
+    id 'anycost'
+}
+```
+
+### Kotlin扩展
 #### 计算代码块耗时
 ```
 cost(key) {
