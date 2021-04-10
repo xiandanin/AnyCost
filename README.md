@@ -57,6 +57,12 @@ plugins {
     id 'anycost'
 }
 ```
+在需要计算耗时的方法加上`AnyCostMark`注解
+```
+@AnyCostMark(key = "test")
+private void test() {
+}
+```
 
 ### Kotlin扩展
 #### 计算代码块耗时
