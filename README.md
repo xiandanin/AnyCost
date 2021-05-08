@@ -1,6 +1,6 @@
 ## 安装
 ```
-implementation 'in.xiandan:anycost:1.0.4'
+implementation 'in.xiandan:anycost:1.0.5'
 ```
 
 ## 使用

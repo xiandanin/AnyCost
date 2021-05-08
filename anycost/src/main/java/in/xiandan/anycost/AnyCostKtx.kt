@@ -6,7 +6,7 @@ import android.text.TextUtils
 /**
  * Created by xiandanin on 2021/4/9 13:28
  */
-inline fun <T> T.cost(key: String? = null, vararg extras: Any, block: T.() -> Unit): T {
+inline fun <T, R> T.cost(key: String? = null, vararg extras: Any, block: (T) -> R): R {
     var costKey = key
     if (TextUtils.isEmpty(costKey)) {
         val stackTrace = Thread.currentThread().stackTrace
@@ -16,10 +16,10 @@ inline fun <T> T.cost(key: String? = null, vararg extras: Any, block: T.() -> Un
         }
     }
     val start = SystemClock.uptimeMillis()
-    block()
+    val blockReturn = block(this)
     val end = SystemClock.uptimeMillis() - start
     AnyCost.end(costKey, end, extras)
-    return this
+    return blockReturn
 }
 
 fun AnyCost.addOnTimingListener(onTimingEndFunc: (key: String, threadName: String, time: Long, extras: Any?) -> Unit): AnyCost {
